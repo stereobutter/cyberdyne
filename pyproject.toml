@@ -1,0 +1,24 @@
+[project]
+name = "behavior-trees"
+version = "0.1.0"
+description = "A friendly Python library for (asynchronous) behavior trees."
+authors = [
+    {name = "Sascha Desch", email = "sascha.desch@hotmail.com"},
+]
+dependencies = [
+    "trio>=0.22.0",
+]
+requires-python = ">=3.7"
+readme = "README.md"
+license = {text = "MIT"}
+[project.optional-dependencies]
+
+[build-system]
+requires = ["pdm-pep517>=1.0.0"]
+build-backend = "pdm.pep517.api"
+
+[tool.pdm]
+[tool.pdm.dev-dependencies]
+dev = [
+    "pytest>=7.2.0",
+]
