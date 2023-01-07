@@ -2,8 +2,8 @@ from trio_util import AsyncValue
 from typing import TypeVar, Generic, Callable, Union, NoReturn
 from collections.abc import Iterable
 
-T = TypeVar("T")
 
+T = TypeVar("T")
 FieldT = Union["Field[T]", "DerivedField[T]"]
 
 
@@ -66,7 +66,9 @@ class DerivedField(Generic[T]):
     """
 
     def __init__(
-        self, fn: Callable[..., T], depends_on: Union[FieldT, Iterable[FieldT]]
+        self,
+        fn: Callable[..., T],
+        depends_on: Union[FieldT, Iterable[FieldT]],
     ):
         self._fn = fn
         self._depends_on: Iterable[FieldT] = (
