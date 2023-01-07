@@ -1,12 +1,12 @@
 import pytest
-from cyberdyne.blackboards import Field, DerivedField
+from cyberdyne.blackboards import Field, DependentField
 
 
 class Example:
     a = Field(1)
     b = Field(2)
-    c = DerivedField(lambda a, b: a + b, depends_on=(a, b))
-    d = DerivedField(lambda c: 2 * c, depends_on=c)
+    c = DependentField(lambda a, b: a + b, depends_on=(a, b))
+    d = DependentField(lambda c: 2 * c, depends_on=c)
 
 
 def test_initial_field_values():

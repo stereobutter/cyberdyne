@@ -4,7 +4,7 @@ from collections.abc import Iterable
 
 
 T = TypeVar("T")
-FieldT = Union["Field[T]", "DerivedField[T]"]
+FieldT = Union["Field[T]", "DependentField[T]"]
 
 
 class Field(Generic[T]):
@@ -29,7 +29,7 @@ class Field(Generic[T]):
         self._initial_value = initial_value
         self._dependents = []
 
-    def _add_dependent(self, field: "DerivedField"):
+    def _add_dependent(self, field: "DependentField"):
         self._dependents.append(field)
 
     def __set_name__(self, cls: type, name: str):
@@ -51,7 +51,7 @@ class Field(Generic[T]):
             dependent._update(obj)
 
 
-class DerivedField(Generic[T]):
+class DependentField(Generic[T]):
     """Descriptor for an attribute that depends on other attributes with the
     ability to wait for a value or transition.
 
@@ -60,9 +60,9 @@ class DerivedField(Generic[T]):
         >>> class Blackboard:
         >>>     a = Field(1)
         >>>     b = Field(1)
-        >>>     c = DerivedField(lambda a, b: a+b, depends_on=(a, b))
-        >>>     # a derived field may also depend on other derived fields.
-        >>>     d = DerivedField(lambda c: 2*c, depends_on=c)
+        >>>     c = DependentField(lambda a, b: a+b, depends_on=(a, b))
+        >>>     # a DependentField may also depend on other dependent fields.
+        >>>     d = DependentField(lambda c: 2*c, depends_on=c)
     """
 
     def __init__(
@@ -75,7 +75,7 @@ class DerivedField(Generic[T]):
             depends_on if isinstance(depends_on, Iterable) else (depends_on,)
         )
 
-    def _add_dependent(self, field: "DerivedField"):
+    def _add_dependent(self, field: "DependentField"):
         for dependency in self._depends_on:
             dependency._add_dependent(field)
 
@@ -103,5 +103,5 @@ class DerivedField(Generic[T]):
         self._ensure_initial_value(obj)
         return obj.__dict__[self.name]
 
-    def __set__(self, obj, value: "DerivedField") -> NoReturn:
+    def __set__(self, obj, value: "DependentField") -> NoReturn:
         raise AttributeError("can't set attribute for derived fields")
