@@ -8,8 +8,8 @@ FieldT = Union["Field[T]", "DependentField[T]"]
 
 
 class Field(Generic[T]):
-    """Descriptor for an attribute with the ability to wait for a value or
-    transition.
+    """Descriptor for an attribute with the ability to wait
+    for a value or transition.
 
     Example::
 
@@ -52,8 +52,8 @@ class Field(Generic[T]):
 
 
 class DependentField(Generic[T]):
-    """Descriptor for an attribute that depends on other attributes with the
-    ability to wait for a value or transition.
+    """Descriptor for an attribute that depends on other
+    blackboard attributes.
 
     Example::
 
