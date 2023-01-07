@@ -27,10 +27,10 @@ class Field(Generic[T]):
 
     def __init__(self, initial_value: T):
         self._initial_value = initial_value
-        self._dependants = []
+        self._dependents = []
 
-    def _add_dependant(self, field: "DerivedField"):
-        self._dependants.append(field)
+    def _add_dependent(self, field: "DerivedField"):
+        self._dependents.append(field)
 
     def __set_name__(self, cls: type, name: str):
         self.name = name
@@ -47,8 +47,8 @@ class Field(Generic[T]):
         self._ensure_initial_value(obj)
         async_value = obj.__dict__[self.name]
         async_value.value = value
-        for dependant in self._dependants:
-            dependant._update(obj)
+        for dependent in self._dependents:
+            dependent._update(obj)
 
 
 class DerivedField(Generic[T]):
@@ -73,14 +73,14 @@ class DerivedField(Generic[T]):
             depends_on if isinstance(depends_on, Iterable) else (depends_on,)
         )
 
-    def _add_dependant(self, field: "DerivedField"):
+    def _add_dependent(self, field: "DerivedField"):
         for dependency in self._depends_on:
-            dependency._add_dependant(field)
+            dependency._add_dependent(field)
 
     def __set_name__(self, cls, name):
         self.name = name
         for field in self._depends_on:
-            field._add_dependant(self)
+            field._add_dependent(self)
 
     def _ensure_initial_value(self, obj):
         if self.name not in obj.__dict__:
