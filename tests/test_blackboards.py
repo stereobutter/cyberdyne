@@ -1,5 +1,5 @@
 import pytest
-from cyberdyne.blackboard import Field, DerivedField
+from cyberdyne.blackboards import Field, DerivedField
 
 
 class Example:
