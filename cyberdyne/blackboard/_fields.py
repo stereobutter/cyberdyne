@@ -8,7 +8,22 @@ FieldT = Union["Field[T]", "DerivedField[T]"]
 
 
 class Field(Generic[T]):
-    """Descriptor that wraps a `trio_util.AsyncValue` and updates dependant values."""
+    """Descriptor for an attribute with the ability to wait for a value or
+    transition.
+
+    Example::
+
+        >>> class Blackboard:
+        >>>     a = Field(0)
+        >>> ...
+        >>> blackboard = Blackboard()
+        >>> ...
+        >>> # blackboard.a returns an `AsyncValue`
+        >>> await blackboard.a.wait_value(...)
+        >>> ...
+        >>> # sets the value of the underlying `AsyncValue`
+        >>> blackboard.a = 1
+    """
 
     def __init__(self, initial_value: T):
         self._initial_value = initial_value
@@ -37,8 +52,18 @@ class Field(Generic[T]):
 
 
 class DerivedField(Generic[T]):
-    """Descriptor that wraps a `trio_util.AsyncValue` that gets updated
-    when values it depends on change."""
+    """Descriptor for an attribute that depends on other attributes with the
+    ability to wait for a value or transition.
+
+    Example::
+
+        >>> class Blackboard:
+        >>>     a = Field(1)
+        >>>     b = Field(1)
+        >>>     c = DerivedField(lambda a, b: a+b, depends_on=(a, b))
+        >>>     # a derived field may also depend on other derived fields.
+        >>>     d = DerivedField(lambda c: 2*c, depends_on=c)
+    """
 
     def __init__(
         self, fn: Callable[..., T], depends_on: Union[FieldT, Iterable[FieldT]]
