@@ -1,5 +1,5 @@
 [project]
-name = "behavior-trees"
+name = "cyberdyne"
 version = "0.1.0"
 description = "A friendly Python library for (asynchronous) behavior trees."
 authors = [
